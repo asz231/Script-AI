@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Script AI — اصنع محتوى أذكى، مبني على بيانات جمهورك</title>
+  <meta name="description" content="Script AI يساعد صناع المحتوى العرب على تحليل أداء قناتهم، اكتشاف المواضيع الناجحة، وإنشاء سكريبتات بالذكاء الاصطناعي.">
+  <meta name="keywords" content="Script AI, سكريبت للقنوات, يوتيوبرز عرب, تحليل يوتيوب, ذكاء اصطناعي للمحتوى">
+  <meta name="theme-color" content="#FAF7F2">
+  <meta property="og:title" content="Script AI — اصنع محتوى أذكى">
+  <meta property="og:description" content="حلّل أداء قناتك، اكتشف ما يجذب جمهورك، وحوّل أفكارك إلى سكريبتات جاهزة للنشر.">
+  <meta property="og:type" content="website">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="landing-body">
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header class="site-header" id="site-header">
+    <div class="nav-container">
+
+      <!-- Logo -->
+      <a href="/" class="brand-logo" id="brand-logo" aria-label="Script AI - الصفحة الرئيسية">
+        <span class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </span>
+        <span class="brand-name">Script <span class="brand-accent">AI</span></span>
+      </a>
+
+      <!-- Nav -->
+      <nav aria-label="التنقل الرئيسي" class="main-nav">
+        <ul class="nav-list">
+          <li><a href="/" class="nav-link active" aria-current="page">الرئيسية</a></li>
+        </ul>
+      </nav>
+
+      <!-- CTA -->
+      <a href="ai.html" class="nav-cta-btn" id="header-cta-btn" onclick="trackEvent('landing_cta_clicked', {location: 'header'})">
+        <span>ابدأ صناعة محتوى</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+
+    </div>
+  </header>
+
+  <!-- ============================================================
+       HERO SECTION — Full Screen
+       ============================================================ -->
+  <main>
+    <section class="hero-section" id="hero" role="main">
+
+      <!-- Ambient Background Effects -->
+      <div class="hero-bg" aria-hidden="true">
+        <div class="ambient-glow glow-1"></div>
+        <div class="ambient-glow glow-2"></div>
+        <div class="grid-overlay"></div>
+      </div>
+
+      <div class="hero-inner">
+
+        <!-- Left: Text Content -->
+        <div class="hero-content">
+          <div class="hero-badge" role="text">
+            <span class="badge-dot"></span>
+            <span>مخصص لصناع المحتوى العرب</span>
+          </div>
+
+          <h1 class="hero-title">
+            اصنع محتوى أذكى،
+            <span class="title-gradient">مبني على بيانات جمهورك.</span>
+          </h1>
+
+          <p class="hero-desc">
+            حلّل أداء قناتك، اكتشف ما يجذب جمهورك، وحوّل أفكارك إلى سكريبتات جاهزة للنشر.
+          </p>
+
+          <div class="hero-actions">
+            <a href="ai.html" class="cta-primary" id="hero-cta-main" onclick="trackEvent('landing_cta_clicked', {location: 'hero_primary'})">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              <span>ابدأ صناعة محتوى</span>
+            </a>
+            <button class="cta-secondary" id="hero-learn-more" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+              <span>اكتشف المميزات</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Social Proof -->
+          <div class="social-proof" aria-label="إحصائيات المنصة">
+            <div class="proof-item">
+              <span class="proof-num">+500</span>
+              <span class="proof-label">صانع محتوى</span>
+            </div>
+            <div class="proof-divider" aria-hidden="true"></div>
+            <div class="proof-item">
+              <span class="proof-num">+2K</span>
+              <span class="proof-label">سكريبت منشأ</span>
+            </div>
+            <div class="proof-divider" aria-hidden="true"></div>
+            <div class="proof-item">
+              <span class="proof-num">عربي</span>
+              <span class="proof-label">100% تجربة</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Visual / Product Preview -->
+        <div class="hero-visual" aria-label="معاينة واجهة Script AI">
+          <div class="product-preview">
+
+            <!-- Preview Header -->
+            <div class="preview-header">
+              <div class="preview-dots" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="preview-title">Script AI — تحليل القناة</span>
+              <div class="preview-badge live">مباشر</div>
+            </div>
+
+            <!-- Channel Stats -->
+            <div class="preview-stats-row">
+              <div class="preview-stat-card">
+                <div class="stat-label">المشتركون</div>
+                <div class="stat-value">128K</div>
+                <div class="stat-change positive">↑ +4.2%</div>
+              </div>
+              <div class="preview-stat-card">
+                <div class="stat-label">المشاهدات</div>
+                <div class="stat-value">2.4M</div>
+                <div class="stat-change positive">↑ +32%</div>
+              </div>
+              <div class="preview-stat-card">
+                <div class="stat-label">أفضل موضوع</div>
+                <div class="stat-value topic">Gaming</div>
+                <div class="stat-change neutral">🏆 رقم 1</div>
+              </div>
+            </div>
+
+            <!-- Insight Banner -->
+            <div class="preview-insight">
+              <div class="insight-icon" aria-hidden="true">⚡</div>
+              <div class="insight-text">
+                <strong>اكتشاف:</strong> فيديوهات "Gaming" تحقق أداءً أعلى بـ 3x من متوسط قناتك
+              </div>
+            </div>
+
+            <!-- Idea Card -->
+            <div class="preview-idea-card">
+              <div class="idea-header">
+                <span class="idea-tag">💡 فكرة مقترحة</span>
+                <span class="idea-score">نسبة النجاح: 94%</span>
+              </div>
+              <div class="idea-title">أفضل 10 إعدادات Gaming تحتاجها كل عربي</div>
+              <button class="idea-script-btn" aria-label="اكتب السكريبت لهذه الفكرة">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                </svg>
+                اكتب السكريبت
+              </button>
+            </div>
+
+            <!-- Processing indicator -->
+            <div class="preview-processing" aria-live="polite">
+              <div class="processing-dots" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+              <span>Script AI يحلل قناتك...</span>
+            </div>
+
+          </div>
+
+          <!-- Floating decorative cards -->
+          <div class="float-card float-card-1" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            تم توليد 12 سكريبت اليوم
+          </div>
+          <div class="float-card float-card-2" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            مشاهدات +47%
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="scroll-indicator" aria-hidden="true">
+        <div class="scroll-line"></div>
+      </div>
+
+    </section>
+
+    <!-- ============================================================
+         FEATURES SECTION
+         ============================================================ -->
+    <section class="features-section" id="features" aria-label="مميزات Script AI">
+      <div class="features-container">
+
+        <div class="features-header">
+          <h2 class="features-title">كل ما تحتاجه لتنمية قناتك</h2>
+          <p class="features-subtitle">من تحليل البيانات إلى السكريبت الجاهز — في مكان واحد</p>
+        </div>
+
+        <div class="features-grid">
+
+          <div class="feature-card" id="feature-analyze">
+            <div class="feature-icon-wrap" style="--icon-color: #D9383A; --icon-bg: #FDF0F0;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
+              </svg>
+            </div>
+            <h3 class="feature-name">تحليل قناتك</h3>
+            <p class="feature-desc">افهم أداء محتواك واكتشف الأنماط التي تحقق أفضل النتائج.</p>
+          </div>
+
+          <div class="feature-card" id="feature-ideas">
+            <div class="feature-icon-wrap" style="--icon-color: #D97706; --icon-bg: #FFFBEB;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+            </div>
+            <h3 class="feature-name">أفكار مبنية على بيانات</h3>
+            <p class="feature-desc">احصل على أفكار محتوى مناسبة لقناتك وجمهورك.</p>
+          </div>
+
+          <div class="feature-card" id="feature-scripts">
+            <div class="feature-icon-wrap" style="--icon-color: #C0392B; --icon-bg: #FDF0ED;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+            </div>
+            <h3 class="feature-name">سكريبتات بالذكاء الاصطناعي</h3>
+            <p class="feature-desc">حوّل أفكارك إلى سكريبتات طبيعية وجاهزة للتطوير.</p>
+          </div>
+
+          <div class="feature-card" id="feature-arabic">
+            <div class="feature-icon-wrap" style="--icon-color: #15803D; --icon-bg: #F0FDF4;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+            </div>
+            <h3 class="feature-name">مصمم للعرب</h3>
+            <p class="feature-desc">تجربة عربية تفهم أسلوب صناع المحتوى العرب.</p>
+          </div>
+
+        </div>
+
+        <!-- Final CTA -->
+        <div class="features-cta-wrap">
+          <a href="ai.html" class="cta-primary cta-large" id="features-cta-btn" onclick="trackEvent('landing_cta_clicked', {location: 'features_section'})">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            ابدأ مجانًا الآن
+          </a>
+          <p class="cta-note">لا حاجة لحساب — ابدأ فورًا</p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="brand-icon small">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </span>
+        <span class="footer-brand-name">Script AI</span>
+      </div>
+      <p class="footer-copy">© 2026 Script AI — مخصص لصناع المحتوى العرب</p>
+    </div>
+  </footer>
+
+  <!-- Analytics & Tracking -->
+  <script src="analytics.js"></script>
+  <script>
+    // Track page view on load
+    document.addEventListener('DOMContentLoaded', () => {
+      trackEvent('page_view', { page: 'landing', referral_source: getReferralSource() });
+      initReferralTracking();
+
+      // Header scroll effect
+      const header = document.getElementById('site-header');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 20) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      }, { passive: true });
+    });
+  </script>
+</body>
+</html>

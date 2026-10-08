@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Script AI — مساحة العمل</title>
+  <meta name="description" content="حلّل قناتك وأنشئ سكريبتات احترافية بالذكاء الاصطناعي.">
+  <meta name="theme-color" content="#FAF7F2">
+  <meta name="robots" content="noindex">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="workspace-body">
+
+  <!-- ============================================================
+       WORKSPACE HEADER
+       ============================================================ -->
+  <header class="workspace-header">
+    <div class="workspace-nav-container">
+
+      <!-- Back + Logo -->
+      <div class="workspace-brand-group">
+        <a href="index.html" class="back-btn" id="back-to-home-btn" aria-label="العودة للرئيسية" onclick="trackEvent('workspace_back_clicked')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 5 12 12 19"/>
+          </svg>
+        </a>
+        <a href="index.html" class="brand-logo" aria-label="Script AI">
+          <span class="brand-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+          </span>
+          <span class="brand-name">Script <span class="brand-accent">AI</span></span>
+        </a>
+      </div>
+
+      <!-- Workspace Tab Navigation -->
+      <nav class="workspace-tabs" aria-label="أقسام مساحة العمل" role="tablist">
+        <button class="ws-tab active" id="tab-analyze" data-view="analyze" role="tab" aria-selected="true" aria-controls="view-analyze">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+          التحليل
+        </button>
+        <button class="ws-tab" id="tab-ideas" data-view="ideas" role="tab" aria-selected="false" aria-controls="view-ideas">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          الأفكار
+        </button>
+        <button class="ws-tab" id="tab-script" data-view="script" role="tab" aria-selected="false" aria-controls="view-script">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+          السكريبت
+        </button>
+      </nav>
+
+      <!-- Status Indicator -->
+      <div class="ws-status-indicator" id="ws-status-indicator" aria-live="polite">
+        <span class="status-dot idle" aria-hidden="true"></span>
+        <span class="status-text" id="status-text">جاهز</span>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================
+       WORKSPACE MAIN
+       ============================================================ -->
+  <main class="workspace-main" id="workspace-main">
+
+    <!-- ===========================================================
+         VIEW: ANALYZE
+         =========================================================== -->
+    <div id="view-analyze" class="ws-view active-view" role="tabpanel" aria-labelledby="tab-analyze">
+
+      <!-- INITIAL STATE -->
+      <div class="ws-state" id="state-initial">
+        <div class="state-content">
+          <div class="state-icon-wrap purple">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-1.96C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.4 19.54C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
+              <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/>
+            </svg>
+          </div>
+          <h2 class="state-title">ابدأ بصناعة محتواك</h2>
+          <p class="state-desc">أدخل رابط قناتك على YouTube ودع Script AI يحلل أداءك ويقترح لك أفضل الفرص.</p>
+
+          <!-- Channel Input -->
+          <form class="channel-input-form" id="channel-input-form" novalidate>
+            <div class="input-group" role="group" aria-label="إدخال رابط القناة">
+              <div class="input-field-wrap">
+                <div class="input-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                  </svg>
+                </div>
+                <input 
+                  type="url" 
+                  id="channel-url-input" 
+                  class="channel-url-input" 
+                  placeholder="https://youtube.com/@channel أو https://youtube.com/channel/..."
+                  autocomplete="url"
+                  spellcheck="false"
+                  dir="ltr"
+                  aria-label="رابط قناة YouTube"
+                  aria-required="true"
+                >
+                <button type="button" class="input-clear-btn" id="input-clear-btn" aria-label="مسح الرابط" style="display:none;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                </button>
+              </div>
+              <button type="submit" class="analyze-btn" id="analyze-btn" aria-label="ابدأ تحليل القناة">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <span>حلّل القناة</span>
+              </button>
+            </div>
+            <div class="input-error" id="input-error" role="alert" aria-live="assertive" style="display:none;"></div>
+            <div class="input-hint">مثال: https://youtube.com/@MrBeastAr أو https://youtube.com/channel/UCxxxxxx</div>
+          </form>
+
+          <!-- Demo Examples -->
+          <div class="demo-examples">
+            <span class="demo-label">جرّب مثالاً:</span>
+            <button class="demo-chip" data-url="https://youtube.com/@TechArabic" onclick="fillDemoUrl(this)">@TechArabic</button>
+            <button class="demo-chip" data-url="https://youtube.com/@GamingArab" onclick="fillDemoUrl(this)">@GamingArab</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOADING STATE -->
+      <div class="ws-state hidden" id="state-loading">
+        <div class="state-content">
+          <div class="loading-animation" aria-hidden="true">
+            <div class="loading-ring ring-1"></div>
+            <div class="loading-ring ring-2"></div>
+            <div class="loading-ring ring-3"></div>
+            <div class="loading-core">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+          </div>
+          <h2 class="state-title" id="loading-title">جاري تحليل قناتك...</h2>
+          <p class="state-desc" id="loading-desc">نحلل أداء محتواك ونبحث عن أفضل الفرص</p>
+          <div class="loading-steps" id="loading-steps" aria-live="polite">
+            <div class="loading-step active" id="lstep-1">
+              <div class="lstep-dot"></div>
+              <span>جارٍ الاتصال بـ YouTube API</span>
+            </div>
+            <div class="loading-step" id="lstep-2">
+              <div class="lstep-dot"></div>
+              <span>تحليل أداء الفيديوهات</span>
+            </div>
+            <div class="loading-step" id="lstep-3">
+              <div class="lstep-dot"></div>
+              <span>اكتشاف أنماط المحتوى</span>
+            </div>
+            <div class="loading-step" id="lstep-4">
+              <div class="lstep-dot"></div>
+              <span>توليد الأفكار بالذكاء الاصطناعي</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUCCESS STATE: ANALYSIS RESULTS -->
+      <div class="ws-state hidden" id="state-success">
+        <div class="results-layout" id="analysis-results-content">
+          <!-- Filled dynamically by JS -->
+        </div>
+      </div>
+
+      <!-- ERROR STATE -->
+      <div class="ws-state hidden" id="state-error">
+        <div class="state-content">
+          <div class="state-icon-wrap red">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+          </div>
+          <h2 class="state-title">لم نتمكن من تحليل القناة</h2>
+          <p class="state-desc" id="error-message">حدث خطأ أثناء معالجة طلبك. تأكد من صحة رابط القناة وأن الاتصال يعمل.</p>
+          <div class="error-actions">
+            <button class="analyze-btn" id="retry-btn" onclick="retryAnalysis()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.31"/>
+              </svg>
+              إعادة المحاولة
+            </button>
+            <button class="ghost-btn" id="new-analysis-btn" onclick="resetToInitial()">تحليل قناة أخرى</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===========================================================
+         VIEW: IDEAS
+         =========================================================== -->
+    <div id="view-ideas" class="ws-view hidden" role="tabpanel" aria-labelledby="tab-ideas">
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">أفكار محتوى لك</h2>
+          <p class="view-subtitle" id="ideas-subtitle">استناداً إلى تحليل قناتك</p>
+        </div>
+        <button class="ghost-btn small" id="refresh-ideas-btn" onclick="refreshIdeas()" aria-label="توليد أفكار جديدة">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.31"/>
+          </svg>
+          أفكار جديدة
+        </button>
+      </div>
+
+      <div class="ideas-no-analysis hidden" id="ideas-no-analysis">
+        <div class="state-icon-wrap gray">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <p>قم بتحليل قناتك أولاً للحصول على أفكار مخصصة لك</p>
+        <button class="analyze-btn small" onclick="switchView('analyze')">ابدأ التحليل</button>
+      </div>
+
+      <div class="ideas-grid" id="ideas-grid">
+        <!-- Filled dynamically -->
+      </div>
+    </div>
+
+    <!-- ===========================================================
+         VIEW: SCRIPT GENERATOR
+         =========================================================== -->
+    <div id="view-script" class="ws-view hidden" role="tabpanel" aria-labelledby="tab-script">
+      <div class="script-layout">
+
+        <!-- Script Input Panel -->
+        <div class="script-panel" id="script-input-panel">
+          <div class="view-header">
+            <h2 class="view-title">حوّل الفكرة إلى سكريبت</h2>
+          </div>
+
+          <!-- Selected Idea Display -->
+          <div class="selected-idea-wrap" id="selected-idea-wrap">
+            <div class="selected-idea-empty" id="selected-idea-empty">
+              <p>لم تختر فكرة بعد</p>
+              <button class="ghost-btn small" onclick="switchView('ideas')">اختر من الأفكار</button>
+            </div>
+            <div class="selected-idea-card hidden" id="selected-idea-card">
+              <div class="selected-idea-label">الفكرة المختارة</div>
+              <div class="selected-idea-title" id="selected-idea-title">—</div>
+              <button class="change-idea-btn" onclick="switchView('ideas')" aria-label="تغيير الفكرة">تغيير</button>
+            </div>
+          </div>
+
+          <!-- Script Options -->
+          <div class="script-options" id="script-options">
+            <div class="option-group">
+              <label class="option-label" for="script-tone">نبرة السكريبت</label>
+              <div class="option-chips" role="group" aria-label="اختر النبرة" id="tone-chips">
+                <button class="option-chip active" data-value="عفوي" aria-pressed="true">😊 عفوي</button>
+                <button class="option-chip" data-value="حماسي" aria-pressed="false">🔥 حماسي</button>
+                <button class="option-chip" data-value="تعليمي" aria-pressed="false">📚 تعليمي</button>
+                <button class="option-chip" data-value="احترافي" aria-pressed="false">💼 احترافي</button>
+                <button class="option-chip" data-value="كوميدي" aria-pressed="false">😂 كوميدي</button>
+              </div>
+            </div>
+
+            <div class="option-group">
+              <label class="option-label">طول السكريبت</label>
+              <div class="option-chips" role="group" aria-label="اختر الطول" id="length-chips">
+                <button class="option-chip" data-value="قصير" aria-pressed="false">⚡ قصير (3-5 دق)</button>
+                <button class="option-chip active" data-value="متوسط" aria-pressed="true">📹 متوسط (8-12 دق)</button>
+                <button class="option-chip" data-value="طويل" aria-pressed="false">🎬 طويل (+15 دق)</button>
+              </div>
+            </div>
+          </div>
+
+          <button class="analyze-btn full-width" id="generate-script-btn" onclick="generateScript()" aria-label="توليد السكريبت">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            <span id="generate-btn-text">اكتب السكريبت</span>
+          </button>
+        </div>
+
+        <!-- Script Output Panel -->
+        <div class="script-output-panel" id="script-output-panel">
+
+          <!-- Empty state -->
+          <div class="script-empty" id="script-empty">
+            <div class="state-icon-wrap gray">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+            </div>
+            <p>اختر فكرة واضغط "اكتب السكريبت" لتوليد سكريبت مخصص لقناتك</p>
+          </div>
+
+          <!-- Script content -->
+          <div class="script-result hidden" id="script-result">
+            <div class="script-result-header">
+              <h3 class="script-result-title" id="script-result-title">السكريبت</h3>
+              <div class="script-actions-group">
+                <button class="script-action-btn" id="copy-script-btn" onclick="copyScript()" aria-label="نسخ السكريبت">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                  </svg>
+                  نسخ
+                </button>
+                <button class="script-action-btn" id="save-script-btn" onclick="saveScript()" aria-label="حفظ السكريبت">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                    <polyline points="17 21 17 13 7 13 7 21"/>
+                    <polyline points="7 3 7 8 15 8"/>
+                  </svg>
+                  حفظ
+                </button>
+                <button class="script-action-btn" id="regen-script-btn" onclick="generateScript()" aria-label="إعادة التوليد">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.31"/>
+                  </svg>
+                  إعادة التوليد
+                </button>
+              </div>
+            </div>
+            <div class="script-content" id="script-content" aria-live="polite">
+              <!-- Script sections rendered here -->
+            </div>
+          </div>
+
+          <!-- Script Loading -->
+          <div class="script-loading hidden" id="script-loading" aria-live="polite">
+            <div class="loading-animation small" aria-hidden="true">
+              <div class="loading-ring ring-1"></div>
+              <div class="loading-ring ring-2"></div>
+              <div class="loading-core">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2.2">
+                  <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                </svg>
+              </div>
+            </div>
+            <p>Script AI يكتب السكريبت...</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ============================================================
+       SHARE MODAL
+       ============================================================ -->
+  <div class="modal-overlay hidden" id="share-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="share-modal-title">
+    <div class="modal-card">
+      <button class="modal-close-btn" id="modal-close-btn" aria-label="إغلاق" onclick="closeShareModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <h2 class="modal-title" id="share-modal-title">شارك تحليلك</h2>
+
+      <!-- Share Card Preview -->
+      <div class="share-card" id="share-card">
+        <div class="share-card-header">
+          <div class="share-brand">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+            Script AI
+          </div>
+          <div class="share-channel-name" id="share-channel-name">—</div>
+        </div>
+        <div class="share-stat-rows" id="share-stat-rows">
+          <!-- Filled dynamically -->
+        </div>
+        <div class="share-cta-text">حلّل قناتك مجانًا على Script AI</div>
+      </div>
+
+      <div class="share-actions">
+        <button class="analyze-btn" id="copy-share-link-btn" onclick="copyShareLink()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+          نسخ الرابط
+        </button>
+        <button class="ghost-btn" onclick="closeShareModal()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       TOAST CONTAINER
+       ============================================================ -->
+  <div id="toast-container" class="toast-container" role="status" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- Scripts -->
+  <script src="analytics.js"></script>
+  <script src="workspace.js"></script>
+</body>
+</html>
