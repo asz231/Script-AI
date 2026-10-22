@@ -14,16 +14,44 @@ const fs      = require('fs');
 const path    = require('path');
 const url     = require('url');
 
+// Auto-load .env file if present (zero external dependencies)
+function loadEnv() {
+  const envPath = path.join(__dirname, '.env');
+  if (fs.existsSync(envPath)) {
+    try {
+      const content = fs.readFileSync(envPath, 'utf8');
+      content.split('\n').forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('#')) return;
+        const idx = trimmed.indexOf('=');
+        if (idx > 0) {
+          const key = trimmed.slice(0, idx).trim();
+          let val = trimmed.slice(idx + 1).trim();
+          if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+            val = val.slice(1, -1);
+          }
+          if (process.env[key] === undefined) {
+            process.env[key] = val;
+          }
+        }
+      });
+    } catch (err) {
+      console.warn('[Env] Failed to read .env file:', err.message);
+    }
+  }
+}
+loadEnv();
+
 // ==========================================================================
 // CONFIGURATION — Load from environment variables
 // ==========================================================================
 const CONFIG = {
   PORT: process.env.PORT || 3000,
 
-  // n8n Webhook URLs (set these in your .env file — NEVER hardcode in code)
-  N8N_ANALYZE_WEBHOOK: process.env.N8N_ANALYZE_WEBHOOK || null,
-  N8N_IDEAS_WEBHOOK:   process.env.N8N_IDEAS_WEBHOOK   || null,
-  N8N_SCRIPT_WEBHOOK:  process.env.N8N_SCRIPT_WEBHOOK  || null,
+  // n8n Webhook URLs (loads from .env with fallback to 'My workflow 2')
+  N8N_ANALYZE_WEBHOOK: process.env.N8N_ANALYZE_WEBHOOK || 'http://localhost:5678/webhook/b19cc416-e561-4254-aed8-2feca2e9d378/chat',
+  N8N_IDEAS_WEBHOOK:   process.env.N8N_IDEAS_WEBHOOK   || 'http://localhost:5678/webhook/b19cc416-e561-4254-aed8-2feca2e9d378/chat',
+  N8N_SCRIPT_WEBHOOK:  process.env.N8N_SCRIPT_WEBHOOK  || 'http://localhost:5678/webhook/b19cc416-e561-4254-aed8-2feca2e9d378/chat',
 
   // Rate limiting (simple in-memory)
   RATE_LIMIT_WINDOW_MS:  60 * 1000, // 1 minute
@@ -194,6 +222,19 @@ function proxyToN8n(webhookUrl, requestBody) {
   });
 }
 
+// Helper to normalize n8n response format (handles both array and object responses from LangChain chatTrigger)
+function formatN8nResponse(result) {
+  let item = Array.isArray(result) ? (result[0] || {}) : result;
+  if (!item || typeof item !== 'object') {
+    return { output: String(item || '') };
+  }
+  const textOutput = item.output || item.text || item.message || item.response || (item.data && item.data.output);
+  return {
+    output: textOutput || (item.raw ? item.raw : JSON.stringify(item)),
+    ...item
+  };
+}
+
 // ==========================================================================
 // API ROUTE HANDLERS
 // ==========================================================================
@@ -201,43 +242,88 @@ function proxyToN8n(webhookUrl, requestBody) {
 async function handleAnalyze(req, res, body) {
   validateAnalyzeRequest(body);
 
+  const sessionId = body.session_id || body.sessionId || ('ses_' + Date.now());
+
+  // Formatted for both n8n LangChain chatTrigger (chatInput/sessionId) and standard webhooks
   const n8nPayload = {
+    chatInput: `أنا يوتيوبر ورابط قناتي هو: ${body.channel_url}. أريدك أن تحلل قناتي وتقترح أفضل أفكار محتوى مخصصة مع تحليل الأداء.`,
+    sessionId: sessionId,
     channel_url: body.channel_url,
     user_id:     body.user_id     || 'anonymous',
     platform:    body.platform    || 'youtube',
-    session_id:  body.session_id  || null,
+    session_id:  sessionId,
   };
 
-  const result = await proxyToN8n(CONFIG.N8N_ANALYZE_WEBHOOK, n8nPayload);
-
-  sendJSON(res, 200, { success: true, ...result });
+  const rawResult = await proxyToN8n(CONFIG.N8N_ANALYZE_WEBHOOK, n8nPayload);
+  const formatted = formatN8nResponse(rawResult);
+  sendJSON(res, 200, { success: true, ...formatted });
 }
 
 async function handleIdeas(req, res, body) {
   if (!body || typeof body !== 'object') throw new Error('طلب غير صالح');
 
+  const sessionId = body.session_id || body.sessionId || ('ses_' + Date.now());
+  const channelName = body.channel_data?.name || body.channel_data?.handle || '';
+
   const n8nPayload = {
+    chatInput: `اقترح لي أفكار محتوى جديدة ومبتكرة ${channelName ? 'لقناة ' + channelName : ''} مبنية على التحليل مع الهوك وسبب النجاح.`,
+    sessionId: sessionId,
     channel_data: body.channel_data || {},
     user_id:      body.user_id      || 'anonymous',
+    session_id:   sessionId,
   };
 
-  const result = await proxyToN8n(CONFIG.N8N_IDEAS_WEBHOOK || CONFIG.N8N_ANALYZE_WEBHOOK, n8nPayload);
-  sendJSON(res, 200, { success: true, ...result });
+  const rawResult = await proxyToN8n(CONFIG.N8N_IDEAS_WEBHOOK || CONFIG.N8N_ANALYZE_WEBHOOK, n8nPayload);
+  const formatted = formatN8nResponse(rawResult);
+  sendJSON(res, 200, { success: true, ...formatted });
 }
 
 async function handleScript(req, res, body) {
   validateScriptRequest(body);
 
+  const sessionId = body.session_id || body.sessionId || ('ses_' + Date.now());
+  const idea = body.idea || {};
+  const tone = body.tone || 'عفوي';
+  const length = body.length || 'متوسط';
+
   const n8nPayload = {
-    idea:         body.idea,
-    tone:         body.tone         || 'عفوي',
-    length:       body.length       || 'متوسط',
+    chatInput: `اكتب لي السكريبت الكامل لهذه الفكرة:
+العنوان: ${idea.title || 'فكرة المحتوى'}
+الموضوع: ${idea.topic || ''}
+الهوك: ${idea.hook || ''}
+النبرة: ${tone}
+الطول: ${length}
+يرجى تقسيم السكريبت بوضوح إلى: الهوك (Hook)، المقدمة (Introduction)، المحتوى الرئيسي (Main Content)، النداء للتفاعل (CTA)، والخاتمة (Ending).`,
+    sessionId: sessionId,
+    idea:         idea,
+    tone:         tone,
+    length:       length,
     channel_data: body.channel_data || {},
     user_id:      body.user_id      || 'anonymous',
+    session_id:   sessionId,
   };
 
-  const result = await proxyToN8n(CONFIG.N8N_SCRIPT_WEBHOOK || CONFIG.N8N_ANALYZE_WEBHOOK, n8nPayload);
-  sendJSON(res, 200, { success: true, ...result });
+  const rawResult = await proxyToN8n(CONFIG.N8N_SCRIPT_WEBHOOK || CONFIG.N8N_ANALYZE_WEBHOOK, n8nPayload);
+  const formatted = formatN8nResponse(rawResult);
+  sendJSON(res, 200, { success: true, ...formatted });
+}
+
+async function handleChat(req, res, body) {
+  if (!body || typeof body !== 'object') throw new Error('طلب غير صالح');
+  const chatInput = body.chatInput || body.message || body.text;
+  if (!chatInput) throw new Error('نص الرسالة مطلوب');
+
+  const sessionId = body.sessionId || body.session_id || ('ses_' + Date.now());
+
+  const n8nPayload = {
+    chatInput: chatInput,
+    sessionId: sessionId,
+    user_id: body.user_id || 'anonymous',
+  };
+
+  const rawResult = await proxyToN8n(CONFIG.N8N_ANALYZE_WEBHOOK, n8nPayload);
+  const formatted = formatN8nResponse(rawResult);
+  sendJSON(res, 200, { success: true, ...formatted });
 }
 
 // ==========================================================================
@@ -282,7 +368,7 @@ function pipeFile(filePath, res) {
     'Content-Type': contentType,
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'SAMEORIGIN',
-    'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=3600',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
   });
 
   fs.createReadStream(filePath).pipe(res);
@@ -329,6 +415,16 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (pathname === '/api/health') {
+      sendJSON(res, 200, {
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        n8n_analyze_configured: !!CONFIG.N8N_ANALYZE_WEBHOOK,
+        n8n_script_configured:  !!CONFIG.N8N_SCRIPT_WEBHOOK,
+      });
+      return;
+    }
+
     if (req.method !== 'POST') {
       sendJSON(res, 405, { error: 'Method Not Allowed' });
       return;
@@ -343,13 +439,8 @@ const server = http.createServer(async (req, res) => {
         await handleIdeas(req, res, body);
       } else if (pathname === '/api/script') {
         await handleScript(req, res, body);
-      } else if (pathname === '/api/health') {
-        sendJSON(res, 200, {
-          status: 'ok',
-          timestamp: new Date().toISOString(),
-          n8n_analyze_configured: !!CONFIG.N8N_ANALYZE_WEBHOOK,
-          n8n_script_configured:  !!CONFIG.N8N_SCRIPT_WEBHOOK,
-        });
+      } else if (pathname === '/api/chat') {
+        await handleChat(req, res, body);
       } else {
         sendJSON(res, 404, { error: 'API endpoint not found' });
       }
