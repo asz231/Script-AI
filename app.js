@@ -1,29 +1,44 @@
 /**
  * ScriptAI - Arab YouTubers & Streamers AI Platform
  * Created by Aya Zahran
- * Main Controller: 2 Pages (Features & Direct n8n Webhook Chat)
+ * Main Controller: Chat Page — Direct n8n Webhook Integration
  */
 
 // ==========================================================================
-// 1. Direct Webhook AI Function (Connected to n8n chat workflow)
+// 1. Connection Config (supports mobile via custom server URL)
 // Webhook ID: b19cc416-e561-4254-aed8-2feca2e9d378 (Workflow: My workflow 2)
 // ==========================================================================
-const N8N_DIRECT_WEBHOOK_URL = 'http://localhost:5678/webhook/b19cc416-e561-4254-aed8-2feca2e9d378/chat';
+const N8N_WEBHOOK_PATH = '/webhook/b19cc416-e561-4254-aed8-2feca2e9d378/chat';
+const STORAGE_KEY_SERVER = 'scriptai_server_url';
+
+function getServerBaseUrl() {
+  // Return custom server URL if set (for mobile use)
+  return localStorage.getItem(STORAGE_KEY_SERVER) || '';
+}
+
+function getN8nWebhookUrl() {
+  const base = getServerBaseUrl();
+  if (base) return base.replace(/\/$/, '') + N8N_WEBHOOK_PATH;
+  return 'http://localhost:5678' + N8N_WEBHOOK_PATH;
+}
+
+function getApiChatUrl() {
+  const base = getServerBaseUrl();
+  if (base) return base.replace(/\/$/, '') + '/api/chat';
+  return '/api/chat'; // relative = same origin (works when served by node server)
+}
 
 async function sendMessageToAI(userMessage) {
   const sessionId = AppState.currentSessionId || ('ses_' + Date.now());
+  const apiUrl = getApiChatUrl();
+  const webhookUrl = getN8nWebhookUrl();
 
-  // First try the secure backend proxy (/api/chat)
+  // Try the backend proxy first (works on desktop via node server)
   try {
-    const response = await fetch('/api/chat', {
+    const response = await fetch(apiUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        chatInput: userMessage,
-        sessionId: sessionId
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chatInput: userMessage, sessionId })
     });
 
     if (response.ok) {
@@ -33,20 +48,15 @@ async function sendMessageToAI(userMessage) {
       if (typeof data === 'string') return data;
     }
   } catch (error) {
-    console.warn("[Script AI] فشل الاتصال عبر /api/chat، جاري المحاولة مباشرة عبر الـ Webhook:", error);
+    console.warn('[Script AI] /api/chat failed, trying webhook directly:', error.message);
   }
 
-  // Fallback: direct n8n webhook (works if frontend is opened via Live Server or static host)
+  // Fallback: direct n8n webhook
   try {
-    const directRes = await fetch(N8N_DIRECT_WEBHOOK_URL, {
+    const directRes = await fetch(webhookUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        chatInput: userMessage,
-        sessionId: sessionId
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chatInput: userMessage, sessionId })
     });
 
     if (directRes.ok) {
@@ -56,10 +66,10 @@ async function sendMessageToAI(userMessage) {
       if (typeof directData === 'string') return directData;
     }
   } catch (fallbackError) {
-    console.error("[Script AI] خطأ في الاتصال بالـ Webhook المباشر:", fallbackError);
+    console.error('[Script AI] Webhook direct call failed:', fallbackError.message);
   }
 
-  return "تعذر الاتصال بوكيل الذكاء الاصطناعي. تأكد من تشغيل n8n وتفعيل الـ Workflow (My workflow 2) على http://localhost:5678";
+  return '⚠️ تعذر الاتصال بالخادم. إذا كنت تستخدم الجوال، اضغط على مؤشر الاتصال (●) وأدخل عنوان IP جهازك على الشبكة.';
 }
 
 // ==========================================================================
@@ -86,10 +96,11 @@ document.addEventListener('DOMContentLoaded', () => {
   loadStoredData();
   setupNavigation();
   setupChatHandlers();
+  initConnectionModal();
   renderSessionsList();
 
   if (AppState.sessions.length === 0) {
-    createNewSession("محادثة جديدة");
+    createNewSession('محادثة جديدة');
   } else {
     selectSession(AppState.sessions[0].id);
   }
@@ -524,6 +535,13 @@ function setupChatHandlers() {
   };
   if (editTitleBtn) editTitleBtn.addEventListener('click', handleRenameTitle);
   if (chatTitleHeader) chatTitleHeader.addEventListener('click', handleRenameTitle);
+
+  // Open connection modal when clicking on the status indicator (especially on mobile)
+  const statusIndicator = document.getElementById('ws-status-indicator');
+  if (statusIndicator) {
+    statusIndicator.addEventListener('click', () => openConnectionModal());
+    statusIndicator.style.cursor = 'pointer';
+  }
 }
 
 // ==========================================================================
@@ -744,6 +762,114 @@ async function handleSendMessage() {
   } finally {
     if (sendBtn) sendBtn.disabled = false;
   }
+}
+
+// ==========================================================================
+// 7. Connection Settings Modal (Mobile Server URL Configuration)
+// ==========================================================================
+function initConnectionModal() {
+  const modal        = document.getElementById('connection-modal');
+  const closeBtn     = document.getElementById('close-conn-modal');
+  const saveBtn      = document.getElementById('save-conn-btn');
+  const resetBtn     = document.getElementById('reset-conn-btn');
+  const urlInput     = document.getElementById('server-url-input');
+  const testStatus   = document.getElementById('conn-test-status');
+  if (!modal) return;
+
+  // Pre-fill saved URL
+  if (urlInput) {
+    urlInput.value = getServerBaseUrl();
+  }
+
+  // Close handlers
+  if (closeBtn) closeBtn.addEventListener('click', closeConnectionModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeConnectionModal(); });
+
+  // Reset to default (empty = localhost)
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY_SERVER);
+      if (urlInput) urlInput.value = '';
+      if (testStatus) testStatus.innerHTML = '<span style="color:var(--success)">✓ تم الإعادة للافتراضي (localhost)</span>';
+      updateStatusIndicator(true);
+      showToast('تمت إعادة الضبط إلى الافتراضي', 'info');
+    });
+  }
+
+  // Save & Test
+  if (saveBtn) {
+    saveBtn.addEventListener('click', async () => {
+      if (!urlInput) return;
+      const raw = urlInput.value.trim().replace(/\/$/, '');
+
+      if (!raw) {
+        localStorage.removeItem(STORAGE_KEY_SERVER);
+        if (testStatus) testStatus.innerHTML = '<span style="color:var(--success)">✓ تم الحذف — سيُستخدم الـ localhost</span>';
+        updateStatusIndicator(true);
+        return;
+      }
+
+      // Validate URL format
+      if (!/^https?:\/\//i.test(raw)) {
+        if (testStatus) testStatus.innerHTML = '<span style="color:var(--error)">⚠ الرابط يجب أن يبدأ بـ http:// أو https://</span>';
+        return;
+      }
+
+      if (testStatus) testStatus.innerHTML = '<span style="color:var(--warning)">⏳ جاري اختبار الاتصال...</span>';
+      saveBtn.disabled = true;
+
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 6000);
+        const res = await fetch(raw + '/api/health', { signal: controller.signal }).catch(() =>
+          fetch(raw + '/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chatInput: 'ping', sessionId: 'test' }), signal: controller.signal })
+        );
+        clearTimeout(timeout);
+        localStorage.setItem(STORAGE_KEY_SERVER, raw);
+        if (testStatus) testStatus.innerHTML = `<span style="color:var(--success)">✓ الاتصال ناجح! تم الحفظ.</span>`;
+        updateStatusIndicator(true);
+        showToast('تم حفظ عنوان الخادم بنجاح', 'success');
+        setTimeout(closeConnectionModal, 1200);
+      } catch (err) {
+        if (testStatus) {
+          if (err.name === 'AbortError') {
+            testStatus.innerHTML = '<span style="color:var(--error)">✗ انتهت مهلة الاتصال — تحقق من الـ IP والـ Port</span>';
+          } else {
+            testStatus.innerHTML = `<span style="color:var(--error)">✗ فشل الاتصال: ${err.message}</span>`;
+          }
+        }
+        updateStatusIndicator(false);
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+  }
+}
+
+function openConnectionModal() {
+  const modal   = document.getElementById('connection-modal');
+  const urlInput = document.getElementById('server-url-input');
+  const testStatus = document.getElementById('conn-test-status');
+  if (!modal) return;
+  if (urlInput) urlInput.value = getServerBaseUrl();
+  if (testStatus) testStatus.innerHTML = '';
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  if (urlInput) setTimeout(() => urlInput.focus(), 100);
+}
+
+function closeConnectionModal() {
+  const modal = document.getElementById('connection-modal');
+  if (!modal) return;
+  modal.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function updateStatusIndicator(connected) {
+  const dot  = document.querySelector('#ws-status-indicator .status-dot');
+  const text = document.getElementById('status-text');
+  if (dot)  { dot.className = `status-dot ${connected ? 'success' : 'error'}`; }
+  if (text) { text.textContent = connected ? 'متصل' : 'غير متصل'; }
 }
 
 // Toast & Utilities

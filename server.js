@@ -115,8 +115,18 @@ setInterval(() => {
 // CORS HELPERS
 // ==========================================================================
 function setCORSHeaders(res, origin) {
-  const allowed = CONFIG.ALLOWED_ORIGINS.includes(origin) ? origin : CONFIG.ALLOWED_ORIGINS[0];
-  res.setHeader('Access-Control-Allow-Origin', allowed);
+  // Allow any local network origin (Wi-Fi/Mobile 192.168.x.x, 10.x.x.x, localhost, etc.)
+  const isAllowed = !origin || 
+    origin.includes('localhost') || 
+    origin.includes('127.0.0.1') || 
+    origin.includes('192.168.') || 
+    origin.includes('10.') || 
+    origin.includes('172.') || 
+    origin.includes('github.io') ||
+    CONFIG.ALLOWED_ORIGINS.includes(origin);
+
+  const allowedOrigin = isAllowed ? (origin || '*') : (CONFIG.ALLOWED_ORIGINS[0] || '*');
+  res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Session-ID');
   res.setHeader('Vary', 'Origin');
@@ -461,19 +471,16 @@ const server = http.createServer(async (req, res) => {
 // ==========================================================================
 // START SERVER
 // ==========================================================================
-server.listen(CONFIG.PORT, () => {
+server.listen(CONFIG.PORT, '0.0.0.0', () => {
   console.log('');
-  console.log('╔══════════════════════════════════════════╗');
-  console.log('║       Script AI — Backend Server         ║');
-  console.log(`║   Running at http://localhost:${CONFIG.PORT}        ║`);
-  console.log('╠══════════════════════════════════════════╣');
-  console.log(`║  N8N Analyze : ${CONFIG.N8N_ANALYZE_WEBHOOK ? '✅ Configured' : '❌ Not Set (set N8N_ANALYZE_WEBHOOK)'}  `);
-  console.log(`║  N8N Script  : ${CONFIG.N8N_SCRIPT_WEBHOOK  ? '✅ Configured' : '❌ Not Set (set N8N_SCRIPT_WEBHOOK)'}   `);
-  console.log('╚══════════════════════════════════════════╝');
-  console.log('');
-  console.log('To set n8n webhooks:');
-  console.log('  Windows: set N8N_ANALYZE_WEBHOOK=http://localhost:5678/webhook/xxx');
-  console.log('  Linux:   export N8N_ANALYZE_WEBHOOK=http://localhost:5678/webhook/xxx');
+  console.log('╔═════════════════════════════════════════════════════╗');
+  console.log('║           Script AI — Backend Server                ║');
+  console.log(`║   Laptop: http://localhost:${CONFIG.PORT}                         ║`);
+  console.log(`║   Mobile: http://192.168.1.9:${CONFIG.PORT}/ai.html               ║`);
+  console.log('╠═════════════════════════════════════════════════════╣');
+  console.log(`║  N8N Analyze : ${CONFIG.N8N_ANALYZE_WEBHOOK ? '✅ Configured' : '❌ Not Set'}      ║`);
+  console.log(`║  N8N Script  : ${CONFIG.N8N_SCRIPT_WEBHOOK  ? '✅ Configured' : '❌ Not Set'}      ║`);
+  console.log('╚═════════════════════════════════════════════════════╝');
   console.log('');
 });
 

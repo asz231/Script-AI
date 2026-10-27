@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body class="workspace-body chat-mode">
 
@@ -201,8 +201,32 @@
   <!-- Toast Container -->
   <div id="toast-container" class="toast-container" role="status" aria-live="polite"></div>
 
+  <!-- Connection Settings Modal (لحل مشكلة الاتصال بالجوال) -->
+  <div class="modal-backdrop" id="connection-modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="conn-modal-title">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="conn-modal-title">إعدادات الاتصال بالخادم (للجوال)</h3>
+        <button class="modal-close-btn" id="close-conn-modal" aria-label="إغلاق">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          عند فتح الموقع من الجوال، يجب كتابة عنوان الـ IP لجهاز الكمبيوتر على نفس شبكة الـ Wi-Fi للوصول إلى الخادم و n8n:
+        </p>
+        <div class="form-group">
+          <label for="server-url-input">عنوان الخادم (Server URL):</label>
+          <input type="text" id="server-url-input" class="modal-input" placeholder="http://192.168.1.9:3000">
+        </div>
+        <div class="conn-test-status" id="conn-test-status"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn secondary" id="reset-conn-btn">الافتراضي</button>
+        <button class="modal-btn primary" id="save-conn-btn">حفظ واختبار الاتصال</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="analytics.js"></script>
-  <script src="app.js?v=12"></script>
+  <script src="app.js?v=16"></script>
 </body>
 </html>
