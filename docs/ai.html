@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Script AI — محادثة وصناعة السكريبت</title>
+  <meta name="description" content="دردشة وصناعة سكريبتات احترافية بالذكاء الاصطناعي مع Script AI.">
+  <meta name="theme-color" content="#FAF7F2">
+  <meta name="robots" content="noindex">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css?v=13">
+</head>
+<body class="workspace-body chat-mode">
+
+  <!-- ============================================================
+       WORKSPACE UNIFIED HEADER
+       ============================================================ -->
+  <header class="workspace-header">
+    <div class="workspace-nav-container">
+
+      <!-- Right: Back + Logo -->
+      <div class="workspace-brand-group">
+        <a href="index.html" class="back-btn" id="back-to-home-btn" aria-label="العودة للرئيسية" title="العودة للصفحة الرئيسية">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 5 12 12 19"/>
+          </svg>
+        </a>
+        <a href="index.html" class="brand-logo" aria-label="Script AI">
+          <span class="brand-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+          </span>
+          <span class="brand-name">Script <span class="brand-accent">AI</span></span>
+        </a>
+      </div>
+
+      <!-- Center: Active Chat Title -->
+      <div class="workspace-center-title">
+        <div class="current-chat-badge" id="current-chat-badge-wrap">
+          <span class="status-pulse-dot" aria-hidden="true"></span>
+          <h1 class="chat-current-title-header" id="chat-current-title" title="انقر لتعديل اسم المحادثة">محادثة جديدة</h1>
+          <button class="edit-title-btn" id="edit-title-btn" title="تعديل اسم المحادثة" aria-label="تعديل اسم المحادثة">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Left: Header Actions & Status -->
+      <div class="workspace-header-actions">
+        <!-- Copy Full Chat -->
+        <button class="header-action-btn" id="copy-all-btn" title="نسخ كامل المحادثة">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          <span class="btn-text">نسخ المحادثة</span>
+        </button>
+
+        <!-- Clear Chat -->
+        <button class="header-action-btn danger-hover" id="clear-chat-btn" title="مسح هذه المحادثة">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+          <span class="btn-text">مسح</span>
+        </button>
+
+        <!-- Mobile Sidebar Toggle -->
+        <button class="header-action-btn sidebar-toggle-btn" id="toggle-sidebar-btn" aria-label="سجل المحادثات">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+          <span class="btn-text">الذاكرة</span>
+        </button>
+
+        <!-- AI Connection Indicator -->
+        <div class="ws-status-indicator" id="ws-status-indicator" title="متصل بوكيل Script AI">
+          <span class="status-dot success" aria-hidden="true"></span>
+          <span class="status-text" id="status-text">متصل</span>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================
+       CHAT WORKSPACE (Sidebar + Centered Stream)
+       ============================================================ -->
+  <div class="chat-workspace-layout">
+
+    <!-- SIDEBAR: ذاكرة المحادثات -->
+    <aside class="chat-sidebar" id="chat-sidebar">
+      <div class="sidebar-top">
+        <button class="new-chat-btn" id="new-chat-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          <span>محادثة جديدة</span>
+        </button>
+      </div>
+
+      <div class="sidebar-title-bar">
+        <span class="sidebar-heading">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          ذاكرة المحادثات
+        </span>
+      </div>
+
+      <!-- Sessions List -->
+      <div class="sidebar-sessions-list" id="sidebar-sessions-list">
+        <!-- Rendered dynamically by JS -->
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <div class="sidebar-tip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <span>Shift + Enter لسطر جديد</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CHAT AREA: الدردشة مع الأداة -->
+    <main class="chat-main-area">
+
+      <!-- Centered Scrollable Messages Container -->
+      <div class="chat-stream-wrapper">
+        <div class="chat-messages-container" id="chat-messages-container">
+          <!-- Rendered dynamically by JS -->
+        </div>
+      </div>
+
+      <!-- Floating Bottom Input Area -->
+      <div class="chat-input-wrapper">
+        <div class="chat-input-inner">
+
+          <!-- Quick Suggestion Chips -->
+          <div class="chat-quick-chips">
+            <button class="quick-chip" onclick="useQuickPrompt('أنا يوتيوبر ورابط قناتي هو: ')">
+              <span>📊 تحليل قناتي</span>
+            </button>
+            <button class="quick-chip" onclick="useQuickPrompt('اكتب لي سكريبت فيديو يوتيوب كامل مع هوك ومقدمة مشوقة')">
+              <span>🎬 سكريبت كامل</span>
+            </button>
+            <button class="quick-chip" onclick="useQuickPrompt('اقترح لي فكرة تحدي ألعاب حماسية مع الشباب اللي يطلعوا معي')">
+              <span>🎮 فكرة تحدي</span>
+            </button>
+            <button class="quick-chip" onclick="useQuickPrompt('أعطني هوك سريع يجذب المشاهد في أول 10 ثواني')">
+              <span>⚡ هوك قوي</span>
+            </button>
+          </div>
+
+          <!-- Main Input Field -->
+          <div class="chat-input-box">
+            <button class="chat-send-btn" id="chat-send-btn" aria-label="إرسال" title="إرسال الرسالة">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </button>
+            <textarea 
+              id="chat-textarea" 
+              class="chat-textarea" 
+              placeholder="اكتب رسالتك، رابط قناتك، أو اطلب فكرة وسكريبت لحلقتك..."
+              rows="1"
+            ></textarea>
+          </div>
+
+          <div class="chat-input-caption">
+            <span>مدعوم بذكاء اصطناعي مخصص لصناع المحتوى والستريمرز العرب</span>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container" role="status" aria-live="polite"></div>
+
+  <!-- Connection Settings Modal (لحل مشكلة الاتصال بالجوال) -->
+  <div class="modal-backdrop" id="connection-modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="conn-modal-title">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="conn-modal-title">إعدادات الاتصال بالخادم (للجوال)</h3>
+        <button class="modal-close-btn" id="close-conn-modal" aria-label="إغلاق">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          عند فتح الموقع من الجوال، يجب كتابة عنوان الـ IP لجهاز الكمبيوتر على نفس شبكة الـ Wi-Fi للوصول إلى الخادم و n8n:
+        </p>
+        <div class="form-group">
+          <label for="server-url-input">عنوان الخادم (Server URL):</label>
+          <input type="text" id="server-url-input" class="modal-input" placeholder="http://192.168.1.9:3000">
+        </div>
+        <div class="conn-test-status" id="conn-test-status"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn secondary" id="reset-conn-btn">الافتراضي</button>
+        <button class="modal-btn primary" id="save-conn-btn">حفظ واختبار الاتصال</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="analytics.js"></script>
+  <script src="app.js?v=16"></script>
+</body>
+</html>
