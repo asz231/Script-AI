@@ -11,7 +11,7 @@
 const N8N_WEBHOOK_PATH = '/webhook/b19cc416-e561-4254-aed8-2feca2e9d378/chat';
 const STORAGE_KEY_SERVER = 'scriptai_server_url';
 
-const CLOUD_BACKEND_URL = 'https://mailto-met-pci-barrier.trycloudflare.com';
+const CLOUD_BACKEND_URL = 'https://script-ai-production.up.railway.app';
 
 function getServerBaseUrl() {
   // Return custom server URL if explicitly set
