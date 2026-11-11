@@ -112,54 +112,33 @@ async function callGeminiDirect(userMessage, currentHistory = []) {
 
 async function sendMessageToAI(userMessage) {
   const sessionId = AppState.currentSessionId || ('ses_' + Date.now());
-  const customServer = getServerBaseUrl();
-  const session = getCurrentSession();
-  const history = session ? (session.messages || []) : [];
+  const webhookUrl = "https://stuffed-basis-undertaken-bicycle.trycloudflare.com/webhook/b19cc416-e561-4254-aed8-2feca2e9d378/chat";
 
-  // 1. If user explicitly configured a local/custom server URL, try it
-  if (customServer) {
-    try {
-      const response = await fetch(getApiChatUrl(), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chatInput: userMessage, sessionId })
-      });
-      if (response.ok) {
-        const data = await response.json();
-        const output = data.output || data.text || data.message || (Array.isArray(data) && data[0]?.output);
-        if (output) return output;
-      }
-    } catch (e) {
-      console.warn('[Script AI] Custom server failed, using cloud AI:', e.message);
-    }
-  }
-
-  // 2. Direct 24/7 Cloud AI (Gemini 3.5 Flash + Tavily) - Works 24/7 for everyone!
   try {
-    const aiResponse = await callGeminiDirect(userMessage, history);
-    updateStatusIndicator(true);
-    return aiResponse;
-  } catch (cloudErr) {
-    console.warn('[Script AI] Cloud AI error:', cloudErr.message);
-  }
-
-  // 3. Fallback to local n8n webhook if reachable
-  try {
-    const directRes = await fetch(getN8nWebhookUrl(), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chatInput: userMessage, sessionId })
+    const res = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chatInput: userMessage, sessionId: sessionId })
     });
-    if (directRes.ok) {
-      const directData = await directRes.json();
-      const directOutput = directData.output || directData.text || directData.message || (Array.isArray(directData) && directData[0]?.output);
-      if (directOutput) return directOutput;
+
+    if (res.ok) {
+      const data = await res.json();
+      const output = data.output || data.text || data.message || (Array.isArray(data) && data[0]?.output);
+      if (output) {
+        updateStatusIndicator(true);
+        return output;
+      }
+      if (typeof data === "string") {
+        updateStatusIndicator(true);
+        return data;
+      }
     }
-  } catch (n8nErr) {
-    console.error('[Script AI] n8n fallback failed:', n8nErr.message);
+  } catch (err) {
+    console.error("[Script AI] Webhook error:", err);
   }
 
-  return '⚠️ تعذر توليد الرد، يرجى المحاولة مرة أخرى بعد لحظات.';
+  updateStatusIndicator(false);
+  return "⚠️ تعذر الاتصال بالخادم. يرجى المحاولة مرة أخرى.";
 }
 
 // 2. State & Session Management
