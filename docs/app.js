@@ -12,8 +12,12 @@ const N8N_WEBHOOK_PATH = '/webhook/b19cc416-e561-4254-aed8-2feca2e9d378/chat';
 const STORAGE_KEY_SERVER = 'scriptai_server_url';
 
 function getServerBaseUrl() {
-  // Return custom server URL if set (for mobile use)
-  return localStorage.getItem(STORAGE_KEY_SERVER) || '';
+  const custom = localStorage.getItem(STORAGE_KEY_SERVER);
+  if (custom && (custom.includes("trycloudflare.com") || custom.includes("railway.app"))) {
+    localStorage.removeItem(STORAGE_KEY_SERVER);
+    return "";
+  }
+  return custom || "";
 }
 
 function getN8nWebhookUrl() {
@@ -97,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupNavigation();
   setupChatHandlers();
   initConnectionModal();
+  updateStatusIndicator(true);
   renderSessionsList();
 
   if (AppState.sessions.length === 0) {
