@@ -11,31 +11,9 @@
 const N8N_WEBHOOK_PATH = '/webhook/b19cc416-e561-4254-aed8-2feca2e9d378/chat';
 const STORAGE_KEY_SERVER = 'scriptai_server_url';
 
-const CLOUD_BACKEND_URL = 'https://script-ai-production.up.railway.app';
-
 function getServerBaseUrl() {
-  // Return custom server URL if explicitly set
-  const custom = localStorage.getItem(STORAGE_KEY_SERVER);
-  if (custom) return custom;
-  // If hosted on GitHub Pages, connect to the secure Cloud backend tunnel automatically
-  if (window.location.hostname.includes('github.io')) {
-    return CLOUD_BACKEND_URL;
-  }
-  return '';
-}
-
-async function checkHealth() {
-  const base = getServerBaseUrl();
-  const healthUrl = base ? (base.replace(/\/$/, '') + '/api/health') : '/api/health';
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
-    const res = await fetch(healthUrl, { signal: controller.signal });
-    clearTimeout(timeout);
-    updateStatusIndicator(res.ok);
-  } catch (e) {
-    updateStatusIndicator(false);
-  }
+  // Return custom server URL if set (for mobile use)
+  return localStorage.getItem(STORAGE_KEY_SERVER) || '';
 }
 
 function getN8nWebhookUrl() {
@@ -119,8 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setupNavigation();
   setupChatHandlers();
   initConnectionModal();
-  checkHealth();
-  setInterval(checkHealth, 25000);
   renderSessionsList();
 
   if (AppState.sessions.length === 0) {
