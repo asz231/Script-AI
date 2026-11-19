@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اقتراحات شعار Script AI — تصميم واختيار الشعار</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAF7F2;
+      --card-bg: #FFFFFF;
+      --text: #1C1917;
+      --text-muted: #78716C;
+      --accent: #D9383A;
+      --accent-glow: rgba(217, 56, 58, 0.18);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      font-family: 'Cairo', sans-serif;
+      color: var(--text);
+      padding: 40px 20px 80px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header {
+      text-align: center;
+      max-width: 700px;
+      margin-bottom: 40px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #FDF0F0;
+      color: var(--accent);
+      border: 1px solid rgba(217, 56, 58, 0.2);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      color: #111;
+    }
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+      max-width: 1140px;
+      width: 100%;
+    }
+    .concept-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 24px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(120, 95, 75, 0.05);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      position: relative;
+    }
+    .concept-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(217, 56, 58, 0.12);
+      border-color: rgba(217, 56, 58, 0.3);
+    }
+    .tag {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #D97706;
+      background: #FFFBEB;
+      border: 1px solid rgba(217, 119, 6, 0.2);
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .logo-frame {
+      width: 110px;
+      height: 110px;
+      margin: 16px 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 12px 24px rgba(217, 56, 58, 0.25));
+      transition: transform 0.25s ease;
+    }
+    .concept-card:hover .logo-frame {
+      transform: scale(1.08);
+    }
+    .logo-frame svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .brand-preview {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      background: #FAF7F2;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+    .brand-preview .preview-icon {
+      width: 32px;
+      height: 32px;
+    }
+    .brand-preview .brand-text {
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+    }
+    .brand-preview .brand-text span {
+      color: var(--accent);
+    }
+    .card-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: #1c1917;
+    }
+    .card-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+    .features-list {
+      text-align: right;
+      width: 100%;
+      background: #FDFBF8;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-size: 0.85rem;
+      color: #44403C;
+      margin-bottom: 20px;
+    }
+    .features-list li {
+      list-style: none;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .features-list li:last-child { margin-bottom: 0; }
+    .features-list li::before {
+      content: "✓";
+      color: var(--accent);
+      font-weight: 900;
+    }
+    .choose-btn {
+      width: 100%;
+      background: #1C1917;
+      color: #FFFFFF;
+      border: none;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 12px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .choose-btn:hover {
+      background: var(--accent);
+      transform: translateY(-2px);
+    }
+    .dark-preview-section {
+      max-width: 1140px;
+      width: 100%;
+      background: #141416;
+      border-radius: 24px;
+      padding: 40px;
+      margin-top: 50px;
+      color: white;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    }
+    .dark-preview-section h2 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .dark-preview-section p {
+      color: #A1A1AA;
+      margin-bottom: 30px;
+      font-size: 0.95rem;
+    }
+    .dark-logos-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 50px;
+      flex-wrap: wrap;
+    }
+    .dark-logo-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .dark-logo-item .frame {
+      width: 90px;
+      height: 90px;
+      filter: drop-shadow(0 8px 24px rgba(217, 56, 58, 0.4));
+    }
+    .dark-logo-item span {
+      font-size: 0.9rem;
+      color: #E4E4E7;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="badge">
+      <span>✨ خيارات تصميم الهوية البصرية</span>
+    </div>
+    <h1>اختاري الشعار الأنسب لـ Script AI</h1>
+    <p class="subtitle">
+      ثلاثة مقترحات مصممة خصيصاً للتعبير عن قوة كتابة السكريبت، صناعة الفيديو واليوتيوب، وسحر الذكاء الاصطناعي.
+    </p>
+  </div>
+
+  <!-- 3D Render Presentation -->
+  <div style="max-width: 1140px; width: 100%; background: #0C0A09; border-radius: 24px; overflow: hidden; margin-bottom: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.25); border: 1px solid rgba(217, 56, 58, 0.2); text-align: center;">
+    <img src="assets/concept_render.jpg" alt="Script AI 3D Concept Mockup" style="max-width: 100%; max-height: 480px; object-fit: contain; margin: 0 auto; display: block; padding-top: 10px;" />
+    <div style="padding: 24px 20px; background: #1C1917; color: white;">
+      <h3 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 6px;">ريندر ثلاثي الأبعاد واقعي (3D Concept Mockup)</h3>
+      <p style="color: #D6D3D1; font-size: 0.95rem;">الريشة الرقمية السينمائية المدمجة بزر التشغيل الناري وشرارة الذكاء الاصطناعي</p>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <!-- CONCEPT 1 -->
+    <div class="concept-card">
+      <div class="tag">الخيار 1</div>
+      <div class="logo-frame">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="opt1-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FF4B4B"/>
+              <stop offset="55%" stop-color="#D9383A"/>
+              <stop offset="100%" stop-color="#991B1B"/>
+            </linearGradient>
+            <linearGradient id="opt1-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FDE047"/>
+              <stop offset="100%" stop-color="#F59E0B"/>
+            </linearGradient>
+          </defs>
+          <rect x="4" y="4" width="92" height="92" rx="26" fill="url(#opt1-bg)"/>
+          <!-- Quill / Pen Blade Body -->
+          <path d="M50 16L32 48C30 52 32.5 56 37 56H63C67.5 56 70 52 68 48L50 16Z" fill="white" fill-opacity="0.18"/>
+          <!-- Pen slit -->
+          <line x1="50" y1="18" x2="50" y2="44" stroke="white" stroke-width="3" stroke-linecap="round"/>
+          <!-- Play Arrow integrated -->
+          <path d="M43 45L63 56L43 67V45Z" fill="#FFFFFF"/>
+          <!-- Dynamic flow script swoosh -->
+          <path d="M26 74C36 80 64 80 74 74" stroke="white" stroke-width="4" stroke-linecap="round" stroke-opacity="0.85"/>
+          <!-- Golden AI Sparkle -->
+          <path d="M50 6C50 11 54 14 58 14C54 14 50 17 50 22C50 17 46 14 42 14C46 14 50 11 50 6Z" fill="url(#opt1-gold)"/>
+        </svg>
+      </div>
+
+      <div class="brand-preview">
+        <div class="preview-icon">
+          <!-- Mini SVG 1 -->
+          <svg viewBox="0 0 100 100" width="32" height="32" fill="none">
+            <rect x="4" y="4" width="92" height="92" rx="26" fill="url(#opt1-bg)"/>
+            <path d="M43 45L63 56L43 67V45Z" fill="#FFFFFF"/>
+            <path d="M50 6C50 11 54 14 58 14C54 14 50 17 50 22C50 17 46 14 42 14C46 14 50 11 50 6Z" fill="url(#opt1-gold)"/>
+          </svg>
+        </div>
+        <div class="brand-text">Script <span>AI</span></div>
+      </div>
+
+      <h3 class="card-title">ريشة السكريبت الذكية (The Cyber Quill)</h3>
+      <p class="card-desc">
+        يدمج بين ريشة القلم الرقمي المائل المخصصة لكتابة السيناريو مع زر تشغيل الفيديو وشعاع الذكاء الاصطناعي.
+      </p>
+
+      <ul class="features-list">
+        <li>يرمز مباشرة لمهارة كتابة السكريبت والتأليف</li>
+        <li>يتحول رأس القلم لزر تشغيل فيديو يوتيوب (Play)</li>
+        <li>نجمة ذكاء اصطناعي مشعة في أعلى الشعار</li>
+      </ul>
+
+      <button class="choose-btn" onclick="alert('أخبرني في الشات أنكِ اخترتِ الخيار الأول (الريشة الذكية)!')">
+        <span>اختيار هذا الشعار (الخيار 1)</span>
+      </button>
+    </div>
+
+    <!-- CONCEPT 2 -->
+    <div class="concept-card">
+      <div class="tag">الخيار 2</div>
+      <div class="logo-frame">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="opt2-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1C1917"/>
+              <stop offset="100%" stop-color="#0C0A09"/>
+            </linearGradient>
+            <linearGradient id="opt2-ribbon" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FF5252"/>
+              <stop offset="50%" stop-color="#E53935"/>
+              <stop offset="100%" stop-color="#D84315"/>
+            </linearGradient>
+            <linearGradient id="opt2-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FDE047"/>
+              <stop offset="100%" stop-color="#F59E0B"/>
+            </linearGradient>
+          </defs>
+          <rect x="4" y="4" width="92" height="92" rx="26" fill="url(#opt2-bg)" stroke="#292524" stroke-width="2"/>
+          <!-- Dynamic S-Ribbon -->
+          <path d="M66 28C66 28 42 22 34 32C26 42 44 48 56 52C68 56 74 64 68 74C62 84 34 78 30 74" stroke="url(#opt2-ribbon)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Play Triangle inside center curve -->
+          <path d="M47 43L63 52L47 61V43Z" fill="#FFFFFF"/>
+          <!-- Sparkle -->
+          <path d="M74 16C74 20 77 23 80 23C77 23 74 26 74 30C74 26 71 23 68 23C71 23 74 20 74 16Z" fill="url(#opt2-gold)"/>
+        </svg>
+      </div>
+
+      <div class="brand-preview">
+        <div class="preview-icon">
+          <!-- Mini SVG 2 -->
+          <svg viewBox="0 0 100 100" width="32" height="32" fill="none">
+            <rect x="4" y="4" width="92" height="92" rx="26" fill="url(#opt2-bg)"/>
+            <path d="M66 28C66 28 42 22 34 32C26 42 44 48 56 52C68 56 74 64 68 74C62 84 34 78 30 74" stroke="url(#opt2-ribbon)" stroke-width="11" stroke-linecap="round"/>
+            <path d="M47 43L63 52L47 61V43Z" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <div class="brand-text">Script <span>AI</span></div>
+      </div>
+
+      <h3 class="card-title">شعار S السينمائي العصري (The S-Ribbon)</h3>
+      <p class="card-desc">
+        طراز عالمي حديث مينيمال (مثل براندات التقنية الكبرى)، يجسد حرف S كشريط فيلم ناري يلتف حول زر التشغيل.
+      </p>
+
+      <ul class="features-list">
+        <li>تصميم ثلاثي الأبعاد هندسي مبتكر ومينيمال</li>
+        <li>يعطي طابع الفخامة والعالمية للعلامة التجارية</li>
+        <li>خلفية فحمية عميقة تبرز التوهج القرمزي الناري</li>
+      </ul>
+
+      <button class="choose-btn" onclick="alert('أخبرني في الشات أنكِ اخترتِ الخيار الثاني (شعار S العصري)!')">
+        <span>اختيار هذا الشعار (الخيار 2)</span>
+      </button>
+    </div>
+
+    <!-- CONCEPT 3 -->
+    <div class="concept-card">
+      <div class="tag">الخيار 3</div>
+      <div class="logo-frame">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="opt3-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FF4136"/>
+              <stop offset="60%" stop-color="#D9383A"/>
+              <stop offset="100%" stop-color="#7F1D1D"/>
+            </linearGradient>
+            <linearGradient id="opt3-spark" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FDE047"/>
+              <stop offset="100%" stop-color="#F59E0B"/>
+            </linearGradient>
+          </defs>
+          <rect x="4" y="4" width="92" height="92" rx="26" fill="url(#opt3-bg)"/>
+          <!-- Clapperboard top dynamic arm -->
+          <path d="M22 28L74 20L76 29L24 37L22 28Z" fill="white" fill-opacity="0.95"/>
+          <path d="M33 26L38 35M47 24L52 33M61 22L66 31" stroke="#D9383A" stroke-width="3.5" stroke-linecap="round"/>
+          <!-- Clapperboard Base -->
+          <rect x="22" y="38" width="56" height="42" rx="6" fill="white" fill-opacity="0.16" stroke="white" stroke-width="2"/>
+          <!-- Play button -->
+          <path d="M44 48L60 59L44 70V48Z" fill="#FFFFFF"/>
+          <!-- Script lines inside -->
+          <line x1="28" y1="46" x2="38" y2="46" stroke="white" stroke-width="2" stroke-linecap="round" stroke-opacity="0.75"/>
+          <line x1="28" y1="52" x2="36" y2="52" stroke="white" stroke-width="2" stroke-linecap="round" stroke-opacity="0.75"/>
+          <!-- AI Star -->
+          <path d="M78 10C78 15 82 18 86 18C82 18 78 21 78 26C78 21 74 18 70 18C74 18 78 15 78 10Z" fill="url(#opt3-spark)"/>
+        </svg>
+      </div>
+
+      <div class="brand-preview">
+        <div class="preview-icon">
+          <!-- Mini SVG 3 -->
+          <svg viewBox="0 0 100 100" width="32" height="32" fill="none">
+            <rect x="4" y="4" width="92" height="92" rx="26" fill="url(#opt3-bg)"/>
+            <path d="M44 48L60 59L44 70V48Z" fill="#FFFFFF"/>
+            <path d="M78 10C78 15 82 18 86 18C82 18 78 21 78 26C78 21 74 18 70 18C74 18 78 15 78 10Z" fill="url(#opt3-spark)"/>
+          </svg>
+        </div>
+        <div class="brand-text">Script <span>AI</span></div>
+      </div>
+
+      <h3 class="card-title">كلاكيت الإخراج والـ AI (Director Clapper)</h3>
+      <p class="card-desc">
+        مستوحى من كلاكيت تصوير الأفاليوم والفيديوهات الاحترافية، مع خطوط السكريبت وزر المشاهدة ولمعة الذكاء الاصطناعي.
+      </p>
+
+      <ul class="features-list">
+        <li>يرمز مباشرة لعالم إنتاج وتصوير الفيديوهات</li>
+        <li>واضح جداً وسهل التمييز حتى بأحجام صغيرة</li>
+        <li>يعطي إحساساً بالمرح والإنتاج الإبداعي للستريمرز</li>
+      </ul>
+
+      <button class="choose-btn" onclick="alert('أخبرني في الشات أنكِ اخترتِ الخيار الثالث (كلاكيت الإخراج)!')">
+        <span>اختيار هذا الشعار (الخيار 3)</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Dark Mode Preview Section -->
+  <div class="dark-preview-section">
+    <h2>معاينة الشعارات في الوضع الداكن (Dark Mode)</h2>
+    <p>كيف تظهر الأيقونات فوق الخلفيات الداكنة وشاشات البث والتطبيقات:</p>
+    <div class="dark-logos-row">
+      <div class="dark-logo-item">
+        <div class="frame">
+          <svg viewBox="0 0 100 100" width="90" height="90" fill="none">
+            <rect x="4" y="4" width="92" height="92" rx="26" fill="url(#opt1-bg)"/>
+            <path d="M50 16L32 48C30 52 32.5 56 37 56H63C67.5 56 70 52 68 48L50 16Z" fill="white" fill-opacity="0.18"/>
+            <line x1="50" y1="18" x2="50" y2="44" stroke="white" stroke-width="3" stroke-linecap="round"/>
+            <path d="M43 45L63 56L43 67V45Z" fill="#FFFFFF"/>
+            <path d="M26 74C36 80 64 80 74 74" stroke="white" stroke-width="4" stroke-linecap="round" stroke-opacity="0.85"/>
+            <path d="M50 6C50 11 54 14 58 14C54 14 50 17 50 22C50 17 46 14 42 14C46 14 50 11 50 6Z" fill="url(#opt1-gold)"/>
+          </svg>
+        </div>
+        <span>الخيار 1: ريشة السكريبت</span>
+      </div>
+
+      <div class="dark-logo-item">
+        <div class="frame">
+          <svg viewBox="0 0 100 100" width="90" height="90" fill="none">
+            <rect x="4" y="4" width="92" height="92" rx="26" fill="url(#opt2-bg)" stroke="#3F3F46" stroke-width="2"/>
+            <path d="M66 28C66 28 42 22 34 32C26 42 44 48 56 52C68 56 74 64 68 74C62 84 34 78 30 74" stroke="url(#opt2-ribbon)" stroke-width="11" stroke-linecap="round"/>
+            <path d="M47 43L63 52L47 61V43Z" fill="#FFFFFF"/>
+            <path d="M74 16C74 20 77 23 80 23C77 23 74 26 74 30C74 26 71 23 68 23C71 23 74 20 74 16Z" fill="url(#opt2-gold)"/>
+          </svg>
+        </div>
+        <span>الخيار 2: حرف S العصري</span>
+      </div>
+
+      <div class="dark-logo-item">
+        <div class="frame">
+          <svg viewBox="0 0 100 100" width="90" height="90" fill="none">
+            <rect x="4" y="4" width="92" height="92" rx="26" fill="url(#opt3-bg)"/>
+            <path d="M22 28L74 20L76 29L24 37L22 28Z" fill="white" fill-opacity="0.95"/>
+            <path d="M33 26L38 35M47 24L52 33M61 22L66 31" stroke="#D9383A" stroke-width="3.5" stroke-linecap="round"/>
+            <rect x="22" y="38" width="56" height="42" rx="6" fill="white" fill-opacity="0.16" stroke="white" stroke-width="2"/>
+            <path d="M44 48L60 59L44 70V48Z" fill="#FFFFFF"/>
+            <path d="M78 10C78 15 82 18 86 18C82 18 78 21 78 26C78 21 74 18 70 18C74 18 78 15 78 10Z" fill="url(#opt3-spark)"/>
+          </svg>
+        </div>
+        <span>الخيار 3: كلاكيت الإخراج</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

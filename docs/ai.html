@@ -13,7 +13,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=13">
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+  <link rel="stylesheet" href="style.css?v=14">
 </head>
 <body class="workspace-body chat-mode">
 
@@ -33,13 +36,32 @@
         </a>
         <a href="index.html" class="brand-logo" aria-label="Script AI">
           <span class="brand-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-              <path d="M2 17l10 5 10-5"/>
-              <path d="M2 12l10 5 10-5"/>
+            <svg viewBox="0 0 48 48" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Script AI Logo">
+              <defs>
+                <linearGradient id="sai-grad-ws" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#FF5252"/>
+                  <stop offset="55%" stop-color="#D9383A"/>
+                  <stop offset="100%" stop-color="#B71C1C"/>
+                </linearGradient>
+                <linearGradient id="sai-spark-ws" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#FFE082"/>
+                  <stop offset="50%" stop-color="#FFCA28"/>
+                  <stop offset="100%" stop-color="#FFA000"/>
+                </linearGradient>
+              </defs>
+              <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#sai-grad-ws)"/>
+              <path d="M12 12C12 10.9 12.9 10 14 10H27L33 16V34C33 35.1 32.1 36 31 36H14C12.9 36 12 35.1 12 34V12Z" fill="white" fill-opacity="0.16"/>
+              <line x1="16" y1="15" x2="25" y2="15" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-opacity="0.85"/>
+              <line x1="16" y1="20" x2="21" y2="20" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-opacity="0.6"/>
+              <path d="M18 24.5C18 23.4 19.2 22.7 20.2 23.25L28.1 27.75C29.05 28.3 29.05 29.7 28.1 30.25L20.2 34.75C19.2 35.3 18 34.6 18 33.5V24.5Z" fill="#FFFFFF"/>
+              <path d="M35 5C35 8.3 37.7 11 41 11C37.7 11 35 13.7 35 17C35 13.7 32.3 11 29 11C32.3 11 35 8.3 35 5Z" fill="url(#sai-spark-ws)"/>
             </svg>
           </span>
           <span class="brand-name">Script <span class="brand-accent">AI</span></span>
+          <span class="workspace-creator-badge" title="فكرة وتطوير آية زهران">
+            <span class="creator-sparkle">✦</span>
+            <span>فكرة وتطوير <strong>آية زهران</strong></span>
+          </span>
         </a>
       </div>
 
@@ -130,6 +152,13 @@
 
       <!-- Sidebar Footer -->
       <div class="sidebar-footer">
+        <div class="sidebar-creator-card">
+          <div class="creator-icon">✦</div>
+          <div class="creator-info">
+            <span class="creator-role">فكرة وتطوير المنصة</span>
+            <strong class="creator-name">آية زهران</strong>
+          </div>
+        </div>
         <div class="sidebar-tip">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"/>
@@ -188,7 +217,7 @@
           </div>
 
           <div class="chat-input-caption">
-            <span>مدعوم بذكاء اصطناعي مخصص لصناع المحتوى والستريمرز العرب</span>
+            <span>مدعوم بذكاء اصطناعي مخصص لصناع المحتوى والستريمرز العرب • فكرة وتطوير <strong>آية زهران</strong></span>
           </div>
 
         </div>
