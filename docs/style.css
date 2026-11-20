@@ -534,10 +534,7 @@ img, svg { display: block; }
 }
 
 .title-gradient {
-  background: linear-gradient(135deg, #E8404A 0%, #FF7A30 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--accent);
   display: block;
 }
 
